@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <main>
+        <div class="d-flex flex-column flex-shrink-0 bg-light" style="width: 4.5rem;">
+            <a href="/" class="d-block p-2 link-dark text-decoration-none">
+                <img src="../images/icon48.png" class="menu-logo">
+            </a>
+            <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+                <li class="nav-item">
+                    <a href="options.html" class="nav-link py-3 border-bottom" aria-current="page" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="__MSG_home__">
+                        <i class="fas fa-home fa-lg"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link py-3 border-bottom active" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="__MSG_settings__">
+                        <i class="fas fa-sliders-h fa-lg"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="container-fluid">
+            <div class="px-4 py-5 my-2">
+                <h1 class="display-5 fw-bold">__MSG_settings__</h1>
+
+                <p class="lead">Abaixo estão as configurações disponíveis no momento, os emotes vão ser buscados a partir da Twitch, BetterTTV e FrankerFaceZ</p>
+
+                <form id="configureForm" >
+                    <div class="row">
+
+                        <div class="col-sm-12">
+                            <div class="mb-3">
+                                <label for="channels" class="form-label">Canais para carregar os emotes</label>
+                                <input type="text" class="form-control" id="channels" name=channels" aria-describedby="channelsHelp">
+                                <div id="channelsHelp" class="form-text">Escreva o nome dos canais, separados por vírgula ( <b>,</b> ).</div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-12 col-md-6">
+                            <h6>Emotes</h6>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="enableTwitchGlobalEmotes">
+                                <label class="form-check-label" for="enableTwitchGlobalEmotes">Twitch Global Emotes</label>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="enableBTTVGlobalEmotes">
+                                <label class="form-check-label" for="enableBTTVGlobalEmotes">BetterTTV Global Emotes</label>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="enableFFZGlobalEmotes">
+                                <label class="form-check-label" for="enableFFZGlobalEmotes">FrankerFaceZ Global Emotes</label>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-12 col-md-6">
+                            <h6>Chat</h6>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="enableStripedChat">
+                                <label class="form-check-label" for="enableStripedChat">Destaque de linhas no chat</label>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="enableTabComplete">
+                                <label class="form-check-label" for="enableTabComplete">Habilitar tab-complete (TBD)</label>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="enableEmoteMenu">
+                                <label class="form-check-label" for="enableEmoteMenu">Habilitar novo menu de emotes (TBD)</label>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="enableEmoteTooltips">
+                                <label class="form-check-label" for="enableEmoteTooltips">Habilitar tooltips nos emotes</label>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </form>
+
+            </div>
+        </div>
+
+    </main>
+</body>
+<script src="../js/jquery-3.6.0.slim.min.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
+
+<script src="../js/localizehtml.js"></script>
+<script src="../js/configure.js"></script>
+<script src="../js/init.js"></script>
+
+</html>

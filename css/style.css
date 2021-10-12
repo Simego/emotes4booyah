@@ -1,0 +1,16 @@
+body {
+    min-height: 100vh;
+}
+
+main {
+    display: flex;
+    flex-wrap: nowrap;
+    height: 100vh;
+    max-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.menu-logo {
+    width: 55px;
+}
