@@ -15,7 +15,6 @@ $(document).ready(function () {
 
     let syncConfig;
     let localConfig;
-    let chatLoaded = false;
 
     chrome.runtime.sendMessage({ method: "syncConfig" }, function (response) {
         syncConfig = response;
@@ -161,18 +160,18 @@ $(document).ready(function () {
             $chatContainer.addClass('striped');
         }
 
-        loadEmoteMenu($chatContainer);
+        loadChatEditor($chatContainer);
     }
     
-    function loadEmoteMenu($chatContainer) {
-        let $chatboxEditor = $chatContainer.parents('.components-desktop-chatroom').find('.components-chatbox-editor .editor-container');
-
+    function loadChatEditor($chatContainer) {
+        let $chatboxEditor = $('.components-desktop-chatroom .components-chatbox-editor .editor-container');
         if($chatboxEditor.length == 0) {
             setTimeout(() => {
-                loadEmoteMenu($chatContainer);
+                loadChatEditor($chatContainer);
             }, 1000);
             return;
         }
+        var $sendButton = $chatboxEditor.find('button.send-btn');
 
         if(syncConfig.emoteMenu) {
             let $originalButton = $chatboxEditor.find('.components-chat-menu-emoji');
@@ -182,8 +181,98 @@ $(document).ready(function () {
             $originalButton.replaceWith($newButton);
             $newButton.empty();
             $newButton.append(`<img src="${chrome.runtime.getURL('images/icon48.png')}" class="E4B-menu-button">`)
-            // xxx
+
+            tippy($newButton[0], {
+                placement: 'top-end',
+                duration: 0,
+                content: 'Emote Menu em breve!',
+            });
         }
+
+        let $input = $chatboxEditor.find('.components-input-element');
+        $input.on('input', function(evt) {
+            let val = $input.val();
+
+        })
+
+        let lastInitialTab = null;
+        let lastTabbedIndex = null;
+        let lastTabbedMatches = null;
+        let lastWordInfo = null;
+        $input.on('keydown', function(e) {
+            let val = $input.val();
+            if(e.keyCode == 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                $input[0].setSelectionRange(val.length, val.length);
+
+                $input.trigger('blur');
+                $input.trigger('focus');
+                $sendButton.trigger('click');
+                return true;
+            }
+            if (val && e.keyCode == 9) {
+                e.preventDefault();
+                if(val.length < 3) return;
+
+                let wordInfo = getWordAtCursor(this);
+                if(!lastInitialTab) {
+                    lastInitialTab = wordInfo;
+                    lastTabbedIndex = null;
+                    lastTabbedMatches = searchEmotes(lastInitialTab.word);
+                }
+                
+                let nextEmote;
+                if(lastTabbedIndex!=null && lastTabbedIndex>-1) {
+                    lastTabbedIndex = lastTabbedIndex+1 < lastTabbedMatches.length ? lastTabbedIndex+1 : 0;
+                    nextEmote = lastTabbedMatches[lastTabbedIndex];
+                } else {
+                    lastTabbedIndex = 0;
+                    nextEmote = lastTabbedMatches[0];
+                }
+
+                if(!nextEmote) return;
+
+                let strp1 = val.substring(0, lastInitialTab.begin);
+                let strp2 = val.substring(lastInitialTab.end, val.length);
+
+                let resultstr = strp1+nextEmote+' ';
+                lastInitialTab.end = resultstr.length;
+                resultstr += strp2;
+
+                $input.val(resultstr);
+                $input.text(resultstr);
+                $input[0].setSelectionRange(lastInitialTab.end, lastInitialTab.end);
+
+                return;
+            }
+            lastInitialTab = null;
+        });
+    }
+
+    function searchEmotes(text, method='startsWith') {
+        let list = Object.keys(localConfig.emoteMap).sort((a,b) => a.localeCompare(b));
+        let matchList = [];
+
+        list.forEach(emote => {
+            if(emote.toLowerCase()[method](text.toLowerCase())) {
+                matchList.push(emote);
+            }
+        })
+        return matchList;
+    }
+
+    function getWordAtCursor(input) {
+        const text = input.value;
+        const startIndex = input.selectionStart;
+        const endIndex = input.selectionEnd;
+        const previousSpaceIndex = text.lastIndexOf(' ', startIndex - 1);
+        const nextSpaceIndex = text.indexOf(' ', endIndex);
+        const begin = previousSpaceIndex < 0 ? 0 : previousSpaceIndex + 1;
+        const end = nextSpaceIndex < 0 ? text.length : nextSpaceIndex;
+        const betweenSpaces = text.substring(begin, end);
+
+        return {begin: begin, end: end, word: betweenSpaces};
     }
 
 })
