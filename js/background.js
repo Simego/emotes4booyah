@@ -11,8 +11,7 @@ const bttvEmoteURL = 'https://cdn.betterttv.net/emote/{id}/1x';
 const MINS_CACHE = 24*60;
 
 let tcid, tcs;
-fetch(chrome.runtime.getURL('config.json')).then(r=>r.json()).then(j=>{tcid=j.tcid;tcs=j.tcs;console.log(tcid, tcs)})
-
+fetch(chrome.runtime.getURL('config.json')).then(r=>r.json()).then(j=>{tcid=j.tcid;tcs=j.tcs;})
 
 function loadSyncStorage(callback) {
 	chrome.storage.sync.get(data => { syncConfig = data; callback && callback(data) });
