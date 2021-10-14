@@ -1,0 +1,27 @@
+{
+	"name": {
+		"message": "Emotes4Booyah",
+		"description": "Title."
+	},
+	"description": {
+		"message": "This extension enable the use of emotes from Twitch, BTTV and FFZ at Booyah!",
+		"description": "Extension description"
+	},
+	"home": {
+		"message": "Home",
+		"description": "Home screen"
+	},
+	"settings": {
+		"message": "Configurations",
+		"description": "Configurations screen"
+	},
+	"homeDescription": {
+		"message": "This is an extension that allows you to use emotes from <b>Twitch</b>, <b>BetterTTV</b> and <b>FrankerFaceZ</b> at <b>Booyah!</b><br>Click at the button below to configure and add channels"
+	},
+	"goConfigure": {
+		"message": "Configure"
+	},
+	"extLoaded": {
+		"message": "Emotes4Booyah loaded!"
+	}
+}

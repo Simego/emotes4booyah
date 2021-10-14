@@ -8,9 +8,11 @@ const ffzGlobalURL = 'https://api.frankerfacez.com/v1/set/global';
 const bttvURL = 'https://api.betterttv.net/3/cached/users/twitch/{twitch_id}';
 const bttvGlobalURL = 'https://api.betterttv.net/3/cached/emotes/global';
 const bttvEmoteURL = 'https://cdn.betterttv.net/emote/{id}/1x';
-const tcid = 'TWITCH_CLIENT_ID';
-const tcs = 'TWITCH_CLIENT_SECRET';
-const MINS_CACHE = 60;
+const MINS_CACHE = 24*60;
+
+let tcid, tcs;
+fetch(chrome.runtime.getURL('config.json')).then(r=>r.json()).then(j=>{tcid=j.tcid;tcs=j.tcs;console.log(tcid, tcs)})
+
 
 function loadSyncStorage(callback) {
 	chrome.storage.sync.get(data => { syncConfig = data; callback && callback(data) });
@@ -40,10 +42,11 @@ chrome.runtime.onInstalled.addListener(() => {
 				tabComplete: true,
 				emoteMenu: true,
 				emoteTooltips: false,
-				twitchGlobalEmotes: false,
+				twitchGlobalEmotes: true,
 				ffzGlobalEmotes: true,
 				bttvGlobalEmotes: true,
 				stripedChat: true,
+				mentionHighlight: true,
 				twitch: null
 			};
 			saveSyncStorage();
@@ -135,7 +138,7 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 
 function checkTwitchToken() {
 	if (syncConfig.twitch && syncConfig.twitch.expires > new Date().getTime()) {
-		console.log(syncConfig.twitch);
+		// console.log(syncConfig.twitch);
 		return;
 	};
 

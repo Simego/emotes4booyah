@@ -34,6 +34,7 @@ $(document).ready(() => {
             bttvGlobalEmotes: fields.bttvGlobalEmotes.prop('checked'),
             ffzGlobalEmotes: fields.ffzGlobalEmotes.prop('checked'),
             stripedChat: fields.stripedChat.prop('checked'),
+            mentionHighlight: fields.mentionHighlight.prop('checked')
         }
     }
 
@@ -51,6 +52,7 @@ $(document).ready(() => {
         fields.bttvGlobalEmotes.prop('checked', syncConfig.bttvGlobalEmotes);
         fields.ffzGlobalEmotes.prop('checked', syncConfig.ffzGlobalEmotes);
         fields.stripedChat.prop('checked', syncConfig.stripedChat);
+        fields.mentionHighlight.prop('checked', syncConfig.mentionHighlight);
     }
 
     let configureForm = $('#configureForm');
@@ -65,6 +67,7 @@ $(document).ready(() => {
         bttvGlobalEmotes: configureForm.find('#enableBTTVGlobalEmotes'),
         ffzGlobalEmotes: configureForm.find('#enableFFZGlobalEmotes'),
         stripedChat: configureForm.find('#enableStripedChat'),
+        mentionHighlight: configureForm.find('#enableMentionHighlight')
     }
 
     fields.channels.on('input', function(evt) {

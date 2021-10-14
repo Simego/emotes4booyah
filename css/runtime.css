@@ -13,32 +13,102 @@
     vertical-align: middle !important;
 }
 
-img.E4B-menu-button {
-    z-index: 1;
-    background-size: cover;
-    content: "";
-    top: 5px;
-    position: relative;
+.E4B-emote-menu-opener {
+    position: absolute;
+    bottom: 70px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    right: 24px;
+    padding-left: 16px;
+}
+.E4B-emote-menu-opener div.toggle-btn {
+    display: none !important;
+}
+.E4B-emote-menu-opener div.E4B-btn {
     width: 30px !important;
     height: 30px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    background-image: none !important;
-    display: inline-block !important;
-    background-repeat: no-repeat;
     border: 1px solid rgba(11,11,11,0.8);
     box-shadow: 0 0 5px rgb(11 11 11 / 80%);
     border-radius: 7px;
 }
-img.E4B-menu-button.active {
-    
+
+.E4B-emote-menu-opener div.E4B-btn img {
+    position: relative;;
+    z-index: 1;
+    width: 30px !important;
+    height: 30px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-block !important;
+    border-radius: 7px;
 }
-img.E4B-menu-button:hover {
+.E4B-emote-menu-opener div.E4B-btn:hover {
     box-shadow: rgb(11 11 11) 0px 0px 5px, rgb(11 11 11) 0px 0px 5px !important;
+}
+.E4B-emote-menu-opener div.E4B-btn.active {
+    box-shadow: inset rgb(11 11 11) 0px 0px 3px 3px, inset rgb(11 11 11) 0px 0px 3px 3px !important;
+}
+.E4B-emote-menu-opener div.E4B-btn.active:hover {
+    box-shadow: inset rgb(11 11 11) 0px 0px 3px 3px, inset rgb(11 11 11) 0px 0px 3px 3px, rgb(11 11 11) 0px 0px 5px, rgb(11 11 11) 0px 0px 5px !important;
+}
+
+.E4B-input-list {
+    position: absolute;
+    width: 100%;
+    width: -webkit-fill-available;
+    display: block;
+    bottom: 40px;
+    padding: 5px !important;
+    background-color: transparent;
+    font-weight: bold;
+}
+
+.E4B-input-list ul {
+    background-color: rgb(41, 41, 44) !important;
+    padding: 5px 12px !important;
+}
+
+.E4B-input-list li {
+    padding: 2px 5px !important;
+    cursor: pointer;
+}
+.E4B-input-list li.active,
+.E4B-input-list li:hover {
+    color: #fa9200;
+    background-color: rgba(255,255,255,0.2);
+}
+
+.E4B-input-list + .components-input-element {
+    box-shadow: 0 0 5px #fa9200;
+}
+
+.components-input.components-input-textarea {
+    position: relative !important;
+    padding: 0 !important;
+}
+.components-input-textarea .components-input-element {
+    margin-left: 16px !important;
+    margin-right: 16px !important;
+}
+
+/* message highlight */
+.message.mention-highlight {
+    background-color: rgba(255,0,0,0.5) !important;
+}
+
+/* override chatmenuemoji*/
+.components-chat-menu-emoji {
+    display: none !important;
 }
 
 .components-chatbox-user-menu .username {
     font-weight: bold;
+}
+
+[dir] .components-chatbox-message-list .scroll-container .message-connection-status {
+    padding: 5px 13px !important;
+    margin-bottom: 0 !important;
 }
 
 .tippy-box {

@@ -20,5 +20,8 @@
 	},
 	"goConfigure": {
 		"message": "Configurar"
+	},
+	"extLoaded": {
+		"message": "Emotes4Booyah carregado!"
 	}
 }
