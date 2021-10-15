@@ -67,6 +67,7 @@
 .E4B-input-list ul {
     background-color: rgb(41, 41, 44) !important;
     padding: 5px 12px !important;
+    overflow: auto !important;
 }
 
 .E4B-input-list li {

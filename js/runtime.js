@@ -46,7 +46,9 @@
                         // chat usernames track
                         let $usermenu = $message.find('.components-chatbox-user-menu');
                         let username = $usermenu.find('.username').text();
-                        chatUsernames.add(username);
+                        if(username.trim().length > 1) {
+                            chatUsernames.add(username);
+                        }
                         //
         
                         let $messageText = $message.find('.message-text');
@@ -61,7 +63,7 @@
                         let foundModifier = 0;
                         for (let i = 0; i < tokens.length; i++) {
                             let token = tokens[i];
-                            let foundEmote = getEmote(token);
+                            let foundEmote = getEmoteHtml(token);
                             if (foundEmote) {
                                 foundModifier++;
                                 tokens[i] = foundEmote;
@@ -95,15 +97,15 @@
                 });
             });
         
-            var observeRetries=0;
+            let chatObserverRetries=0;
             /**
              * 
              */
             function observeChatMessages() {
                 var chatContainer = document.querySelector('.components-chatbox-message-list');
                 if (!chatContainer) {
-                    observeRetries++;
-                    if(observeRetries > 3) return;
+                    chatObserverRetries++;
+                    if(chatObserverRetries > 3) return;
                     setTimeout(observeChatMessages, 1000);
                     return;
                 }
@@ -121,7 +123,7 @@
              * 
              * @param {string} text 
              */
-            function getEmote(text) {
+            function getEmoteHtml(text) {
                 let emote = localConfig.emoteMap[text];
                 if (emote) {
                     return `<img src="${emote.url}" class="E4Bemote tippy" alt="${text}" title="Emote: ${text}\n${emote.from}" >`;
@@ -191,37 +193,75 @@
                     let val = $input.val();
         
                     let wordInfo = getWordAtCursor(this);
-                    wordInfo.begin++;
-                    if(val.length > 1 && wordInfo && wordInfo.word.startsWith('@')) {
-                        let username = wordInfo.word.replace('@', '');
-                        let list = searchUsernames(username);
-        
-                        if(list.length == 0) { // remove if none found
-                            if($showingList) {
-                                $showingList.remove();
-                                $showingList = null;
+                    if(wordInfo.word.length >2) {
+
+                        if(wordInfo.word.startsWith('@')) {
+                            wordInfo.begin++; // keep @
+                            let username = wordInfo.word.replace('@', '');
+                            let list = searchUsernames(username);
+            
+                            if(list.length == 0) { // remove if none found
+                                if($showingList) {
+                                    $showingList.remove();
+                                    $showingList = null;
+                                }
+                                return
                             }
-                            return
+            
+                            if(!$showingList) {
+                                $showingList = $('<div class="E4B-input-list"><ul></ul></div>')
+                                var $inputBox = $chatboxEditor.find('.input-container .input-box .components-input-textarea');
+                                $inputBox.prepend($showingList);
+            
+                                $showingList.on('click', 'li', evt => {
+                                    replaceInputText(val, evt.target.innerText, wordInfo, $input);
+                                    $showingList.remove();
+                                    $showingList = null;
+                                });
+                            }
+            
+                            let $ul = $showingList.find('ul');
+                            $ul.css({ maxHeight: $chatContainer.outerHeight() });
+                            $ul.empty();
+            
+                            list.forEach((username, idx) => {
+                                $ul.append(`<li class="${idx==0?'active':''}">${username}</li>`);
+                            })
                         }
-        
-                        if(!$showingList) {
-                            $showingList = $('<div class="E4B-input-list"><ul></ul></div>')
-        
-                            var $inputBox = $chatboxEditor.find('.input-container .input-box .components-input-textarea');
-        
-                            $inputBox.prepend($showingList);
-        
-                            $showingList.on('click', 'li', function(evt) {
-                                replaceInputText(val, evt.target.innerText, wordInfo, $input);
-                            });
+
+                        if(wordInfo.word.startsWith(':')) {
+                            let emote = wordInfo.word.replace(':', '');
+                            let list = searchEmotes(emote);
+            
+                            if(list.length == 0) { // remove if none found
+                                if($showingList) {
+                                    $showingList.remove();
+                                    $showingList = null;
+                                }
+                                return
+                            }
+            
+                            if(!$showingList) {
+                                $showingList = $('<div class="E4B-input-list"><ul></ul></div>');
+                                var $inputBox = $chatboxEditor.find('.input-container .input-box .components-input-textarea');
+                                $inputBox.prepend($showingList);
+            
+                                $showingList.on('click', 'li', evt => {
+                                    replaceInputText(val, evt.target.getAttribute('code'), wordInfo, $input);
+                                    $showingList.remove();
+                                    $showingList = null;
+                                });
+                            }
+            
+                            let $ul = $showingList.find('ul');
+                            $ul.css({ maxHeight: $chatContainer.outerHeight() });
+                            $ul.empty();
+            
+                            list.forEach((emote, idx) => {
+                                $ul.append(`<li class="${idx==0?'active':''}" code="${emote}">${getEmoteHtml(emote)} ${emote}</li>`);
+                            })
                         }
-        
-                        let $ul = $showingList.find('ul');
-                        $ul.empty();
-        
-                        list.forEach((username, idx) => {
-                            $ul.append(`<li class="${idx==0?'active':''}">${username}</li>`);
-                        })
+
                     } else {
                         if($showingList) {
                             $showingList.remove();
@@ -249,6 +289,8 @@
                                 prevLi = activeLi.siblings().last();
                             }
                             prevLi.addClass('active');
+
+                            prevLi.ensureVisible();
                         }
                     } 
                     if(e.keyCode == 40) { // arrow down
@@ -263,6 +305,7 @@
                             }
                             nextLi.addClass('active');
         
+                            nextLi.ensureVisible();
                         }
                     }
         
@@ -274,8 +317,6 @@
                         // enter interaction with emote/mention list
                         if($showingList) {
                             $showingList.find('li.active').trigger('click');
-                            $showingList.remove();
-                            $showingList = null;
                             return;
                         }
         
@@ -397,5 +438,25 @@
             localStorage.username = res.user.nickname;
         });
     }
+
+    $.fn.ensureVisible = function () {
+        let $container = this.parent();
+
+        //Determine container top and bottom
+        let cTop = $container[0].scrollTop;
+        let cBottom = cTop + $container[0].clientHeight;
+
+        //Determine element top and bottom
+        let eTop = this[0].offsetTop;
+        let eBottom = eTop + this[0].clientHeight;
+
+        //Check if out of view
+        if (eTop < cTop) {
+            $container[0].scrollTop -= (cTop - eTop);
+        }
+        else if (eBottom > cBottom) {
+            $container[0].scrollTop += (eBottom - cBottom);
+        }
+    };
 
 }
