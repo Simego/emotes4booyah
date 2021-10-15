@@ -110,7 +110,7 @@
                 if (!chatContainer) {
                     chatObserverRetries++;
                     if(chatObserverRetries > 3) return;
-                    setTimeout(observeChatMessages, 2000);
+                    setTimeout(observeChatMessages, 1000);
                     return;
                 }
                 let element = document.querySelector('div.message-list .scroll-container');
@@ -177,12 +177,13 @@
              */
             function loadChatEditor($chatContainer) {
                 $chatboxEditor = $('.components-desktop-chatroom .components-chatbox-editor .editor-container');
-                // if($chatboxEditor.length == 0) {
-                //     setTimeout(() => {
-                //         loadChatEditor($chatContainer);
-                //     }, 2000);
-                //     return;
-                // }
+                // need to check and wait for editor/input/emotes area load
+                if($chatboxEditor.length == 0) {
+                    setTimeout(() => {
+                        loadChatEditor($chatContainer);
+                    }, 1000);
+                    return;
+                }
                 var $sendButton = $chatboxEditor.find('button.send-btn');
         
                 if(syncConfig.emoteMenu) {
