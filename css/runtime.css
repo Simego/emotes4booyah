@@ -165,11 +165,13 @@
     margin-bottom: 0 !important;
 }
 
-.message-content a {
+.message-content a,
+.channel-description a {
     color: orange !important;
     text-shadow: 0 0 5px black !important;
 }
-.message-content a:hover {
+.message-content a:hover,
+.channel-description a:hover {
     color: #ffb652 !important;
     text-shadow: 0 0 2px rgb(255 255 255 / 50%) !important;
 }

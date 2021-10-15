@@ -14,7 +14,6 @@
         
             chrome.runtime.sendMessage({ method: "syncConfig" }, function (response) {
                 syncConfig = response;
-                loadChatConfig();
             });
         
             chrome.runtime.sendMessage({ method: "localConfig" }, function (response) {
@@ -30,7 +29,12 @@
             // chatUsernames.add('teste1')
             // chatUsernames.add('teste5')
             // chatUsernames.add('teste42')
-        
+
+            let $profileCard = $('.components-profile-card ');
+            let streamerUsername = $profileCard.find('.user-name').text();
+
+            chatUsernames.add(streamerUsername);
+
             // chat messages
             let urlExpression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
             let urlRegex = new RegExp(urlExpression);
@@ -106,7 +110,7 @@
                 if (!chatContainer) {
                     chatObserverRetries++;
                     if(chatObserverRetries > 3) return;
-                    setTimeout(observeChatMessages, 1000);
+                    setTimeout(observeChatMessages, 2000);
                     return;
                 }
                 let element = document.querySelector('div.message-list .scroll-container');
@@ -114,6 +118,8 @@
                 chatObserver.observe(element, {
                     childList: true
                 });
+
+                loadChatConfig();
                 
                 console.log('chat observer created')
             }
@@ -147,15 +153,21 @@
              * 
              */
             function loadChatConfig() {
-                if(!syncConfig) return;
-                let $chatContainer = $('.components-chatbox-message-list');
+
+                chrome.runtime.sendMessage({ method: "syncConfig" }, function (response) {
+                    syncConfig = response;
+
+                    let $chatContainer = $('.components-chatbox-message-list');
                 
-                // striped chat opts
-                if(syncConfig.stripedChat) {
-                    $chatContainer.addClass('striped');
-                }
-        
-                loadChatEditor($chatContainer);
+                    // striped chat opts
+                    if(syncConfig.stripedChat) {
+                        $chatContainer.addClass('striped');
+                    }
+            
+                    loadChatEditor($chatContainer);
+                    processChannelDescription();
+                });
+                
             }
             
             let $chatboxEditor;
@@ -165,12 +177,12 @@
              */
             function loadChatEditor($chatContainer) {
                 $chatboxEditor = $('.components-desktop-chatroom .components-chatbox-editor .editor-container');
-                if($chatboxEditor.length == 0) {
-                    setTimeout(() => {
-                        loadChatEditor($chatContainer);
-                    }, 1000);
-                    return;
-                }
+                // if($chatboxEditor.length == 0) {
+                //     setTimeout(() => {
+                //         loadChatEditor($chatContainer);
+                //     }, 2000);
+                //     return;
+                // }
                 var $sendButton = $chatboxEditor.find('button.send-btn');
         
                 if(syncConfig.emoteMenu) {
@@ -193,76 +205,74 @@
                     let val = $input.val();
         
                     let wordInfo = getWordAtCursor(this);
-                    if(wordInfo.word.length >2) {
 
-                        if(wordInfo.word.startsWith('@')) {
-                            wordInfo.begin++; // keep @
-                            let username = wordInfo.word.replace('@', '');
-                            let list = searchUsernames(username);
-            
-                            if(list.length == 0) { // remove if none found
-                                if($showingList) {
-                                    $showingList.remove();
-                                    $showingList = null;
-                                }
-                                return
+                    if(wordInfo.word.startsWith('@')) {
+                        // @ mention
+                        wordInfo.begin++; // keep @ when replace
+                        let username = wordInfo.word.replace('@', '');
+                        let list = searchUsernames(username);
+        
+                        if(list.length == 0) { // remove if none found
+                            if($showingList) {
+                                $showingList.remove();
+                                $showingList = null;
                             }
-            
-                            if(!$showingList) {
-                                $showingList = $('<div class="E4B-input-list"><ul></ul></div>')
-                                var $inputBox = $chatboxEditor.find('.input-container .input-box .components-input-textarea');
-                                $inputBox.prepend($showingList);
-            
-                                $showingList.on('click', 'li', evt => {
-                                    replaceInputText(val, evt.target.innerText, wordInfo, $input);
-                                    $showingList.remove();
-                                    $showingList = null;
-                                });
-                            }
-            
-                            let $ul = $showingList.find('ul');
-                            $ul.css({ maxHeight: $chatContainer.outerHeight() });
-                            $ul.empty();
-            
-                            list.forEach((username, idx) => {
-                                $ul.append(`<li class="${idx==0?'active':''}">${username}</li>`);
-                            })
+                            return
                         }
-
-                        if(wordInfo.word.startsWith(':')) {
-                            let emote = wordInfo.word.replace(':', '');
-                            let list = searchEmotes(emote);
-            
-                            if(list.length == 0) { // remove if none found
-                                if($showingList) {
-                                    $showingList.remove();
-                                    $showingList = null;
-                                }
-                                return
-                            }
-            
-                            if(!$showingList) {
-                                $showingList = $('<div class="E4B-input-list"><ul></ul></div>');
-                                var $inputBox = $chatboxEditor.find('.input-container .input-box .components-input-textarea');
-                                $inputBox.prepend($showingList);
-            
-                                $showingList.on('click', 'li', evt => {
-                                    replaceInputText(val, evt.target.getAttribute('code'), wordInfo, $input);
-                                    $showingList.remove();
-                                    $showingList = null;
-                                });
-                            }
-            
-                            let $ul = $showingList.find('ul');
-                            $ul.css({ maxHeight: $chatContainer.outerHeight() });
-                            $ul.empty();
-            
-                            list.forEach((emote, idx) => {
-                                $ul.append(`<li class="${idx==0?'active':''}" code="${emote}">${getEmoteHtml(emote)} ${emote}</li>`);
-                            })
+        
+                        if(!$showingList) {
+                            $showingList = $('<div class="E4B-input-list"><ul></ul></div>')
+                            var $inputBox = $chatboxEditor.find('.input-container .input-box .components-input-textarea');
+                            $inputBox.prepend($showingList);
+        
+                            $showingList.on('click', 'li', evt => {
+                                replaceInputText(val, evt.target.innerText, wordInfo, $input);
+                                $showingList.remove();
+                                $showingList = null;
+                            });
                         }
-
+        
+                        let $ul = $showingList.find('ul');
+                        $ul.css({ maxHeight: $chatContainer.outerHeight() });
+                        $ul.empty();
+        
+                        list.forEach((username, idx) => {
+                            $ul.append(`<li class="${idx==0?'active':''}">${username}</li>`);
+                        })
+                    } else if(wordInfo.word.startsWith(':') && wordInfo.word.length > 2) {
+                        // : emote find
+                        let emote = wordInfo.word.replace(':', '');
+                        let list = searchEmotes(emote);
+        
+                        if(list.length == 0) { // remove if none found
+                            if($showingList) {
+                                $showingList.remove();
+                                $showingList = null;
+                            }
+                            return
+                        }
+        
+                        if(!$showingList) {
+                            $showingList = $('<div class="E4B-input-list"><ul></ul></div>');
+                            var $inputBox = $chatboxEditor.find('.input-container .input-box .components-input-textarea');
+                            $inputBox.prepend($showingList);
+        
+                            $showingList.on('click', 'li', evt => {
+                                replaceInputText(val, evt.target.getAttribute('code'), wordInfo, $input);
+                                $showingList.remove();
+                                $showingList = null;
+                            });
+                        }
+        
+                        let $ul = $showingList.find('ul');
+                        $ul.css({ maxHeight: $chatContainer.outerHeight() });
+                        $ul.empty();
+        
+                        list.forEach((emote, idx) => {
+                            $ul.append(`<li class="${idx==0?'active':''}" code="${emote}">${getEmoteHtml(emote)} ${emote}</li>`);
+                        })
                     } else {
+                        // clear lists
                         if($showingList) {
                             $showingList.remove();
                             $showingList = null;
@@ -432,11 +442,13 @@
     })
 
     function loadUsername() {
-        fetch('https://booyah.live/api/v3/users/'+localStorage.loggedUID)
-        .then(r=>r.json())
-        .then(res=> {
-            localStorage.username = res.user.nickname;
-        });
+        if(localStorage.loggedUID) {
+            fetch('https://booyah.live/api/v3/users/'+localStorage.loggedUID)
+            .then(r=>r.json())
+            .then(res=> {
+                localStorage.username = res.user.nickname;
+            });
+        }
     }
 
     $.fn.ensureVisible = function () {
@@ -453,10 +465,21 @@
         //Check if out of view
         if (eTop < cTop) {
             $container[0].scrollTop -= (cTop - eTop);
-        }
-        else if (eBottom > cBottom) {
+        } else if (eBottom > cBottom) {
             $container[0].scrollTop += (eBottom - cBottom);
         }
     };
+
+    function processChannelDescription() {
+        let $channelBox = $('.channel-content .channel-box');
+        let $channelDescription = $channelBox.find('.channel-description');
+
+        let newContent = $channelDescription.text()
+        .replace(/(\b(https?|):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi, "<a href='$1'>$1</a>")
+        .replace(/(^|[^\/])(www\.[\S]+(\b|$))/gim, '$1<a target="_blank" href="http://$2">$2</a>')
+        .replace(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi, '<a target="_blank" href="mailto:$1" rel="noopener noreferrer">$1</a>');
+
+        $channelDescription.html(newContent);
+    }
 
 }
