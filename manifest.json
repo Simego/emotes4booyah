@@ -1,7 +1,7 @@
 {
     "name": "__MSG_name__",
     "description": "__MSG_description__",
-    "version": "1.5.2",
+    "version": "1.6",
     "manifest_version": 3,
     "author": "Daniel A. Rafaelli (Simego)",
     "default_locale": "pt_BR",
@@ -24,7 +24,6 @@
         "48": "/images/icon48.png",
         "128": "/images/icon128.png"
     },
-    "minimum_chrome_version": "93",
     "permissions": [
         "storage",
         "unlimitedStorage"

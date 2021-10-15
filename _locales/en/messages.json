@@ -15,6 +15,9 @@
 		"message": "Configurations",
 		"description": "Configurations screen"
 	},
+	"settingsDescription": {
+		"message": "Below are the configurations available at the moment, the emotes are fetch from Twitch, BetterTTV and FrankerFaceZ"
+	},
 	"homeDescription": {
 		"message": "This is an extension that allows you to use emotes from <b>Twitch</b>, <b>BetterTTV</b> and <b>FrankerFaceZ</b> at <b>Booyah!</b><br>Click at the button below to configure and add channels"
 	},
@@ -23,5 +26,17 @@
 	},
 	"extLoaded": {
 		"message": "Emotes4Booyah loaded!"
+	},
+	"configSaved": {
+		"message": "Configuration saved"
+	},
+	"cacheRefreshed": {
+		"message": "Cache refreshed"
+	},
+	"save": {
+		"message": "Save"
+	},
+	"refreshCache": {
+		"message": "Refresh Cache"
 	}
 }

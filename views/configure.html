@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="../css/sweetalert2.min.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
@@ -34,7 +35,7 @@
             <div class="px-4 py-5 my-2">
                 <h1 class="display-5 fw-bold">__MSG_settings__</h1>
 
-                <p class="lead">Abaixo estão as configurações disponíveis no momento, os emotes vão ser buscados a partir da Twitch, BetterTTV e FrankerFaceZ</p>
+                <p class="lead">__MSG_settingsDescription__</p>
 
                 <form id="configureForm" >
                     <div class="row">
@@ -87,6 +88,11 @@
                             </div>
 
                             <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="enableShowTimestamp">
+                                <label class="form-check-label" for="enableShowTimestamp">Marcar mensagens com horário de envio</label>
+                            </div>
+
+                            <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="enableEmoteMenu">
                                 <label class="form-check-label" for="enableEmoteMenu">Habilitar novo menu de emotes (TBD)</label>
                             </div>
@@ -99,7 +105,8 @@
 
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <a id="save" class="btn btn-primary">__MSG_save__</a>
+                    <a id="refreshCache" class="btn btn-secondary">__MSG_refreshCache_</a>
                 </form>
 
             </div>
@@ -109,6 +116,7 @@
 </body>
 <script src="../js/jquery-3.6.0.slim.min.js"></script>
 <script src="../js/bootstrap.bundle.min.js"></script>
+<script src="../js/sweetalert2.min.js"></script>
 
 <script src="../js/localizehtml.js"></script>
 <script src="../js/configure.js"></script>

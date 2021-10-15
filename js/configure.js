@@ -34,7 +34,8 @@ $(document).ready(() => {
             bttvGlobalEmotes: fields.bttvGlobalEmotes.prop('checked'),
             ffzGlobalEmotes: fields.ffzGlobalEmotes.prop('checked'),
             stripedChat: fields.stripedChat.prop('checked'),
-            mentionHighlight: fields.mentionHighlight.prop('checked')
+            mentionHighlight: fields.mentionHighlight.prop('checked'),
+            showTimestamp: fields.showTimestamp.prop('checked'),
         }
     }
 
@@ -53,9 +54,12 @@ $(document).ready(() => {
         fields.ffzGlobalEmotes.prop('checked', syncConfig.ffzGlobalEmotes);
         fields.stripedChat.prop('checked', syncConfig.stripedChat);
         fields.mentionHighlight.prop('checked', syncConfig.mentionHighlight);
+        fields.showTimestamp.prop('checked', syncConfig.showTimestamp);
     }
 
     let configureForm = $('#configureForm');
+    let btnSave = configureForm.find('#save');
+    let btnRefreshCache = configureForm.find('#refreshCache');
 
     let fields = {
         channels: configureForm.find('#channels'),
@@ -67,7 +71,8 @@ $(document).ready(() => {
         bttvGlobalEmotes: configureForm.find('#enableBTTVGlobalEmotes'),
         ffzGlobalEmotes: configureForm.find('#enableFFZGlobalEmotes'),
         stripedChat: configureForm.find('#enableStripedChat'),
-        mentionHighlight: configureForm.find('#enableMentionHighlight')
+        mentionHighlight: configureForm.find('#enableMentionHighlight'),
+        showTimestamp: configureForm.find('#enableShowTimestamp'),
     }
 
     fields.channels.on('input', function(evt) {
@@ -77,7 +82,7 @@ $(document).ready(() => {
     loadSyncStorage(loadFormValues);
     loadLocalStorage();
 
-    configureForm.on('submit', function(e) {
+    btnSave.on('click', e => {
         e.preventDefault();
         
         let oldChannels = syncConfig.channels;
@@ -89,12 +94,31 @@ $(document).ready(() => {
         if(oldChannels !== syncConfig.channels) {
             localConfig.lastUpdate = null;
 
-            saveLocalStorage()
+            saveLocalStorage();
 
             chrome.runtime.sendMessage({ method: "refreshCache" }, function (response) {
-                console.log('refreshCache response: ', response);
+                // console.log('refreshCache response: ', response);
             });
 
         }
+
+        Swal.fire(
+            chrome.i18n.getMessage('configSaved'),
+            '',
+            'success'
+        )
+
+    })
+
+    btnRefreshCache.on('click', e => {
+        chrome.runtime.sendMessage({ method: "refreshCache" }, function (response) {
+            // console.log('refreshCache response: ', response);
+
+            Swal.fire(
+                chrome.i18n.getMessage('cacheRefreshed'),
+                '',
+                'success'
+            )
+        });
     })
 })

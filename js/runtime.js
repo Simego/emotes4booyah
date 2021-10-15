@@ -21,7 +21,7 @@
             });
         
             chrome.runtime.sendMessage({ method: "refreshCache" }, function (response) {
-                console.log('refreshCache response: ', response);
+                // console.log('refreshCache response: ', response);
             });
         
             // username list
@@ -49,6 +49,10 @@
         
                         // chat usernames track
                         let $usermenu = $message.find('.components-chatbox-user-menu');
+                        if(syncConfig.showTimestamp && $usermenu.find('.message-time').length == 0) {
+                            let dt = new Date();
+                            $usermenu.prepend($(`<span class="message-time">${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}</span>`))
+                        }
                         let username = $usermenu.find('.username').text();
                         if(username.trim().length > 1) {
                             chatUsernames.add(username);

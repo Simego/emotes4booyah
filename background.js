@@ -46,6 +46,7 @@ chrome.runtime.onInstalled.addListener(() => {
 				bttvGlobalEmotes: true,
 				stripedChat: true,
 				mentionHighlight: true,
+				showTimestamp: false,
 				twitch: null
 			};
 			saveSyncStorage();
@@ -77,12 +78,8 @@ chrome.runtime.onInstalled.addListener(() => {
 		}
 	});
 
-	refreshCache(function (status) {
-		if (status) {
-			console.log('emotes updated')
-		} else {
-			console.log('emotes not updated')
-		}
+	refreshCache(status => {
+		
 	});
 
 	checkTwitchToken();
@@ -103,7 +100,7 @@ chrome.runtime.onConnect.addListener(() => {
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-	console.log('requesting ', request)
+	// console.log('requesting ', request)
 	switch (request.method) {
 		case 'localConfig':
 			loadLocalStorage(sendResponse);
