@@ -16,7 +16,7 @@
 		"description": "Tela configurações"
 	},
 	"settingsDescription": {
-		"message": "Abaixo estão as configurações disponíveis no momento, os emotes vão ser buscados a partir da Twitch, BetterTTV e FrankerFaceZ",
+		"message": "Abaixo estão as configurações disponíveis no momento, os emotes vão ser buscados a partir da Twitch, BetterTTV e FrankerFaceZ"
 	},
 	"homeDescription": {
 		"message": "Esta é uma extensão que lhe permite usar emotes da <b>Twitch</b>, <b>BetterTTV</b> e <b>FrankerFaceZ</b> na <b>Booyah!</b><br>Clique no botão abaixo para fazer a configuração e adicionar canais customizados caso queira."
